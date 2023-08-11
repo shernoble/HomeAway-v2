@@ -1,0 +1,34 @@
+[{
+  "_id": {
+    "$oid": "6446a5d9a18e976efaf9bc65"
+  },
+  "UserName": "kavya",
+  "PhoneNumber": {
+    "$numberLong": "9449223626"
+  },
+  "Email": "uranium716@gmail.com",
+  "password": "Kavya123#",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "6447e803c42b85b360aad37f"
+  },
+  "UserName": "sai swetha",
+  "PhoneNumber": {
+    "$numberLong": "8341231344"
+  },
+  "Email": "swetha09@gmail.com",
+  "password": "swetha@09",
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "645272c8e8b34c9912c1a957"
+  },
+  "UserName": "madhavi",
+  "PhoneNumber": {
+    "$numberLong": "8341231344"
+  },
+  "Email": "madhavi@gmail.com",
+  "password": "Madhavi@02",
+  "__v": 0
+}]

@@ -1,4 +1,4 @@
-
+require('../models/database');
 
 exports.hostLogin=async(req,res) => {
     try{
