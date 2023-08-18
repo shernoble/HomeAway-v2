@@ -45,7 +45,7 @@
 
                     </form>
                     <!-- <a href="/guest-homepage" class="btn btn-outline-light btn2 text-dark" style="width: 175px;height: 40px;text-align: center;margin-right: 0px;">Go Back</a> -->
-                    <a href="guest-homepage" class="btn-a" style="padding-left: 5px;margin-right: 5px;"><input type="button" value="HOME" class="btn btn-outline-light btn2"></a>
+                    <a href="/guest/homepage" class="btn-a" style="padding-left: 5px;margin-right: 5px;"><input type="button" value="HOME" class="btn btn-outline-light btn2"></a>
                 </div>
 
                 <!-- change button type="submit" -->
@@ -53,8 +53,8 @@
         </div>
         
         <div class="search-container">
-            <form action="/guestpage/search" method="post">
-                <input type="text" class="searchTerm" name="search_ch" id="search_ch" placeholder="search">
+            <form action="/guest/search" method="post">
+                <input type="text" class="searchTerm" name="searchTerm" id="searchTerm" placeholder="search">
                 <button type="submit"><i class="fa fa-search"></i></button>
             </form>
         </div>
@@ -64,9 +64,12 @@
             <button class="go_back button" onclick="openNav()">More Options</button>
         </div>
         
+
+        <%  if (typeof All_listings!=undefined && All_listings.length>0) {%>
+        
         <section class="houses" id="main">
             <%All_listings.forEach(function(element){%>
-                <a href="/guest-reservation/<%=element.ListingID%>">
+                <a href="/guest/reserve/<%=element.ListingID%>">
                     <div class="house">
                         <div style="background-image: url(<%=element.img_url1%>);" class="house-img"></div>
                         <p class="title"><%=element.Title.substring(0,30)+"..."%></p>
@@ -74,10 +77,14 @@
                         <p class="location"><%=element.Address.District%>, <%=element.Address.State%></p>
                         <p class="pricep">Cost/Night:Rs.<%=element.CostPerN%></p>
                     </div>
-                    </a>
+                </a>
             <%});%>
             
         </section>
+        <% }else{ %>
+            <p>no results found!</p>
+            <button onclick="history.back()">Go Back</button>
+        <% } %>
         <script>
             function openNav() {
                 document.getElementById("mySidenav").style.width = "250px";
@@ -99,4 +106,4 @@
             }
 
         </script>
-<%-include("../partials/footer")-%>
+<%-include("./partials/footer")-%>

@@ -1,5 +1,6 @@
 const express=require("express");
 const expressLayouts=require("express-ejs-layouts");
+const alert=require("alert");
 
 require('dotenv').config();
 
