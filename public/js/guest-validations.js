@@ -43,7 +43,9 @@ document.addEventListener("DOMContentLoaded",function(){
             alert("invalid dates");
             return false;
         }
-        num_days=(end_time-start_time)/1000*60*60*24;
+        num_days=(end_time-start_time)/(1000*60*60*24);
+        
+        console.log("duration:"+num_days);
         if(num_guests>20){
             alert("max number of guests is 20");
             return false;

@@ -1,5 +1,7 @@
 require('../models/database');
 
+const https=require("https");
+
 const Guest=require('../models/Guest');
 const Booking=require('../models/Booking');
 const Listing=require('../models/Listing');
@@ -15,13 +17,62 @@ exports.guestStartingPage=async(req,res) => {
         console.log(err);
     }
 }
-
 exports.guestStartingPagePost=async(req,res) => {
+    // redirect
+    let place=req.body.location;
+    let num_guests=req.body.guests;
+    res.redirect("/guest/homepage/?location="+place+"&guests="+num_guests);
+}
+
+exports.guestHomePage=async(req,res) => {
     try{
-        let place=req.body.location;
+        let place=req.query.location;
         console.log("place:"+place);
-        // res.render("guest-login");
-        let num_guests=req.body.number;
+        let num_guests=req.query.guests;
+        // check for house filter as well
+        let query = {
+            $and: [
+                { 
+                    'Address.District': place 
+                },
+                { 
+                    MaxGuests: { 
+                        $gte: num_guests 
+                    } 
+                }
+            ]
+        };
+        let property_type=req.query.property;
+        console.log("hgieor:"+property_type);
+        if( property_type !== undefined && property_type!== 'All'){
+            console.log("correct hehe");
+            query.$and.push({ PropertyType: property_type });
+        }
+        
+        Listing.find(query)
+        .then(function(results){
+            const url="https://api.openweathermap.org/data/2.5/weather?q="+place+"&appid="+process.env.WEATHER_API_KEY+"&units=metric";
+            fetch(url)
+                .then(response => response.json())
+                    .then(weatherData => {
+                        // console.log(weatherData);
+                        const temp=weatherData.main.temp;
+                        // const temp2 = (temp - 32) * 5 / 9;
+                        const weatherDesc=weatherData.weather[0].description;
+                        const icon=weatherData.weather[0].icon;
+                        const icon_url="https://openweathermap.org/img/wn/"+icon+"@2x.png";
+                        res.render("guest-homepage",{All_listings:results, weather_desc:weatherDesc,weather_temp:temp,weather_icon:icon_url,weather_location:place,weather_bool:true,guests:num_guests});
+                    })
+            .catch(error => {
+                console.log("error",error);
+            })
+            
+        })
+        .catch(function(error){
+            res.render("error");
+            console.log(error);
+        
+        })
         
     }
     catch(err){
@@ -97,7 +148,7 @@ exports.guestRegisterPost=async(req,res) => {
         // console.log(email);
 
 
-        Guest.find({Email:email})
+        Guest.find({'Email':email})
         .then(function(results){
             console.log(results);
             if(results.length!=0){
@@ -131,46 +182,30 @@ exports.guestRegisterPost=async(req,res) => {
     }
 }
 
-exports.guestHomepage=async(req,res) => {
-    try{
-        Listing.find({})
-        .then(function(results){
-            res.render("guest-homepage",{All_listings:results});
-        })
-        .catch(function(error){
-            res.render("error");
-            console.log(error);
+// exports.guestHomepage=async(req,res) => {
+//     try{
+//         Listing.find({})
+//         .then(function(results){
+//             res.render("guest-homepage",{All_listings:results,weather_bool:false});
+//         })
+//         .catch(function(error){
+//             res.render("error");
+//             console.log(error);
 
-        })
-    }
-    catch(err){
-        console.log(err);
-        res.render("error");
-    }
-}
+//         })
+//     }
+//     catch(err){
+//         console.log(err);
+//         res.render("error");
+//     }
+// }
 
 exports.guestFilter=async(req,res) => {
     const ch=req.body.choice;
-    console.log(ch);
-    if(ch!="All")
-        {Listing.find({PropertyType:ch})
-            .then(function(results){
-                res.render("guest-homepage",{All_listings:results});
-            })
-            .catch(function(err){
-                console.log(err);
-                res.render("error");
-            });}
-    else{
-        Listing.find({})
-            .then(function(results){
-                res.render("guest-homepage",{All_listings:results});
-            })
-            .catch(function(err){
-                console.log(err);
-                res.render("error");
-            });
-        }
+    const place=req.query.location;
+    const num_guests=req.query.guests;
+    res.redirect("/guest/homepage/?location="+place+"&guests="+num_guests+"&property="+ch);
+    
 }
 
 exports.guestSearch=async(req,res) => {
@@ -180,7 +215,7 @@ exports.guestSearch=async(req,res) => {
         // res.render("guest-login");
         Listing.find({$text:{$search:item}})
             .then(function(results){
-                res.render("guest-homepage",{All_listings:results});
+                res.render("guest-homepage",{All_listings:results,weather_bool:false});
             })
             .catch(function(error){
                 // res.status(500).send({message:error.message || "Error Occured"});

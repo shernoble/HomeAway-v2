@@ -15,7 +15,7 @@
         <div id="mySidenav" class="sidenav">
             <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
                 <div class="container">
-                    <form action="/guest/filter" method="post">
+                    <form action="/guest/filter/?location=<%=weather_location%>&guests=<%=guests%>" method="post">
                         <h5>Property Type</h5>
                         <label>
                             <input type="radio" name="choice" value="All" checked/>
@@ -63,9 +63,24 @@
             <!-- <a href="/guest-homepage" class="btn btn-outline-primary go_back">Go Back</a> -->
             <button class="go_back button" onclick="openNav()">More Options</button>
         </div>
-        
+        <% if(weather_bool){ %>
+        <div class="container mt-4">
+            <div class="row ">
+                <div class="col-md-4">
+                    <div class="card text-center">
+                        <div class="card-body">
+                            <h5 class="card-title">Current Weather in <%=weather_location%></h5>
+                            <h6><%=weather_desc%></h6>
+                            <img id="weatherIcon" src="<%=weather_icon %>" alt="Weather Icon" class="img-fluid mb-3" style="max-width: 50px;">
+                            <p id="temperature" class="h4"><%= weather_temp %> degree celcius</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <% } %>
 
-        <%  if (typeof All_listings!=undefined && All_listings.length>0) {%>
+        <% if (typeof All_listings!=undefined && All_listings.length>0) {%>
         
         <section class="houses" id="main">
             <%All_listings.forEach(function(element){%>

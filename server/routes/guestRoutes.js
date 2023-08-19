@@ -5,7 +5,7 @@ const guestController=require("../controllers/guestController");
 router.get("/login",guestController.guestLogin);
 router.get("/register",guestController.guestRegister);
 router.get('/startingPage',guestController.guestStartingPage);
-router.get('/homepage',guestController.guestHomepage);
+router.get('/homepage',guestController.guestHomePage);
 router.get('/reserve/:id',guestController.guestReserve);
 router.get('/confirmBooking/:id',guestController.guestConfirmBooking);
 
