@@ -1,5 +1,7 @@
 require('../models/database');
 
+const bcrypt=require("bcrypt");
+const saltRounds=10;
 const alert=require("alert");
 
 const Admin=require('../models/Admin');
@@ -29,15 +31,18 @@ exports.adminLoginPost=async(req,res) => {
             if(results.length!=0){
                 // check pass
                 // console.log("yes res"+results.length);
-                if(results[0].password==pass){
-                    // console.log("passs:"+pass);
-                    res.redirect("/admin/homepage");
-                }
-                else{
-                    console.log("incorrect password");
+                bcrypt.compare(pass,results[0].password,function(err,result){
                     
-                    res.render("admin-login");
-                }
+                    if(result){
+                        res.redirect("/admin/homepage");
+                    }
+                    else{
+                        console.log("incorrect password");
+                        alert("incorrect password");
+                        res.render("admin-login");
+                    }
+                    
+                })
             }
             else{
                 console.log("no such user found");
@@ -83,17 +88,20 @@ exports.adminRegisterPost=async(req,res) => {
             }
             else{
                 // register user
-                Admin.create({
-                    UserName:username,
-                    Email:email,
-                    PhoneNumber:phone,
-                    password:pass
-                })
-                .then(function(){
-                    res.redirect("/admin/login");
-                })
-                .catch(function(err){
-                    res.status(500).send({message:err.message || "Error Occured"});
+                bcrypt.hash(pass,saltRounds,function(err, hash){
+                    Admin.create({
+                        UserName:username,
+                        Email:email,
+                        PhoneNumber:phone,
+                        password:hash
+                    })
+                    .then(function(){
+                        res.redirect("/admin/login");
+                    })
+                    .catch(function(err){
+                        res.status(500).send({message:err.message || "Error Occured"});
+                    })
+                
                 })
                 
 

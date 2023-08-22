@@ -1,11 +1,14 @@
 require('../models/database');
 
 const https=require("https");
+const bcrypt=require("bcrypt");
+const saltRounds=10;
+const alert=require("alert");
 
 const Guest=require('../models/Guest');
 const Booking=require('../models/Booking');
 const Listing=require('../models/Listing');
-const alert=require("alert");
+
 
 
 exports.guestStartingPage=async(req,res) => {
@@ -100,16 +103,18 @@ exports.guestLoginPost=async(req,res) => {
         .then(function(results){
             if(results.length!=0){
                 // check pass
-                if(results[0].password==pass){
-                    // console.log(pass);
-                    res.redirect("/guest/homepage");
-                }
-                else{
-                    console.log("incorrect password");
-                    alert("incorrect password");
+                bcrypt.compare(pass,results[0].password,function(err,result){
                     
-                    res.render("guest-login");
-                }
+                    if(result){
+                        res.redirect("/guest/startingPage");
+                    }
+                    else{
+                        console.log("incorrect password");
+                        alert("incorrect password");
+                        res.render("guest-login");
+                    }
+                    
+                })
             }
             else{
                 console.log("no such user found");
@@ -158,18 +163,20 @@ exports.guestRegisterPost=async(req,res) => {
             }
             else{
                 // register user
-                Guest.create({
-                    UserName:username,
-                    Email:email,
-                    PhoneNumber:phone,
-                    password:pass
-                })
-                .then(function(){
-                    res.redirect("/guest/login");
-                })
-                .catch(function(err){
-                    res.render("error");
-                    console.log(err);
+                bcrypt.hash(pass,saltRounds,function(err, hash){
+                    Guest.create({
+                        UserName:username,
+                        Email:email,
+                        PhoneNumber:phone,
+                        password:hash
+                    })
+                    .then(function(){
+                        res.redirect("/guest/login");
+                    })
+                    .catch(function(err){
+                        res.status(500).send({message:err.message || "Error Occured"});
+                    })
+                
                 })
                 
 

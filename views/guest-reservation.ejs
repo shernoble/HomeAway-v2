@@ -9,9 +9,19 @@
         <link rel="stylesheet" href="/css/reservation.css">
         <%- include ("./partials/header") -%>
         <!-- take Listing as the element passed from app.js -->
-        <div class="description1">
-            <h3><%=Listing.Title%></h3>
-            <p><span class="rooms"><%=Listing.Bedrooms%> bedrooms, <%=Listing.Bathrooms%> bathrooms</span><span class="location"><%=Listing.Address.District%>,<%Listing.Address.State%>India</span></p>
+        <div class="container p-4">
+            <div class="row">
+                <div class="col-md-8">
+                    <h3><%= Listing.Title %></h3>
+                    <p>
+                        <span class="rooms"><%= Listing.Bedrooms %> bedrooms, <%= Listing.Bathrooms %> bathrooms</span>
+                        <span class="location"><%= Listing.Address.District %>, <%= Listing.Address.State %> India</span>
+                    </p>
+                </div>
+                <div class="col-md-4 d-flex align-items-center justify-content-end">
+                    <button class="btn btn-outline-dark" onclick="history.back()">Go Back</button>
+                </div>
+            </div>
         </div>
         <div class="house-imgs">
             <section class="selected-house">

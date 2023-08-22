@@ -72,11 +72,11 @@
         </div>
         <form action="/guest/confirmBooking/?listID=<%=Listing.ListingID%>&startDate=<%=startDate%>&endDate=<%=endDate%>
             &hID=<%=Listing.host.hostID%>" method="post">
-            <button type="submit" class="btn btn-outline-dark">confirm booking</button>
+            <button type="submit" class="btn btn-outline-success">confirm booking</button>
         </form>
         <form action="/guest/homepage" method="post">
             <!-- take back to guest search page -->
-            <button type="submit" class="btn btn-outline-dark" name="go_back">Cancel</button>
+            <button type="submit" class="btn btn-outline-dark" onclick="history.back()" name="go_back">Cancel</button>
         </form>
         
         <script>

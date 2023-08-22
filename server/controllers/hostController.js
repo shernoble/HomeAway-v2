@@ -1,11 +1,15 @@
 require('../models/database');
 
+const bcrypt=require("bcrypt");
+const saltRounds=10;
+const alert=require("alert");
+
 const Host=require("../models/Host");
 const Listing=require("../models/Listing");
 const Booking=require("../models/Booking");
 const Guest=require("../models/Guest");
 
-const alert=require("alert");
+
 
 exports.hostLogin=async(req,res) => {
     try{
@@ -25,21 +29,23 @@ exports.hostLoginPost=async(req,res) => {
         .then(function(results){
             if(results.length!=0){
                 // check pass
-                if(results[0].password==pass){
-                    // console.log(pass);
-                    res.redirect("/guest/homepage");
-                }
-                else{
-                    console.log("incorrect password");
-                    alert("incorrect password");
+                bcrypt.compare(pass,results[0].password,function(err,result){
                     
-                    res.render("guest-login");
-                }
+                    if(result){
+                        res.redirect("/host/homepage");
+                    }
+                    else{
+                        console.log("incorrect password");
+                        alert("incorrect password");
+                        res.render("host-login");
+                    }
+                    
+                })
             }
             else{
                 console.log("no such user found");
                 alert("no such user found");
-                res.render("guest-login");
+                res.render("host-login");
             }
         })
         .catch(function(error){
@@ -82,18 +88,20 @@ exports.hostRegisterPost=async(req,res) => {
                 }
                 else{
                     // register user
-                    Host.create({
-                        UserName:username,
-                        Email:email,
-                        PhoneNumber:phone,
-                        password:pass
-                    })
-                    .then(function(){
-                        res.redirect("/host/login");
-                    })
-                    .catch(function(err){
-                        res.render("error");
-                        console.log(err);
+                    bcrypt.hash(pass,saltRounds,function(err, hash){
+                        Host.create({
+                            UserName:username,
+                            Email:email,
+                            PhoneNumber:phone,
+                            password:hash
+                        })
+                        .then(function(){
+                            res.redirect("/host/login");
+                        })
+                        .catch(function(err){
+                            res.status(500).send({message:err.message || "Error Occured"});
+                        })
+                    
                     })
                     
     

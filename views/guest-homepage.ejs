@@ -51,35 +51,35 @@
                 <!-- change button type="submit" -->
             <!-- </form> -->
         </div>
-        
-        <div class="search-container">
-            <form action="/guest/search" method="post">
-                <input type="text" class="searchTerm" name="searchTerm" id="searchTerm" placeholder="search">
-                <button type="submit"><i class="fa fa-search"></i></button>
-            </form>
-        </div>
-        <!-- <a href="/guest-homepage"><button class="search_button btn btn-outline-primary">Go Back</button></a> -->
         <div>
-            <!-- <a href="/guest-homepage" class="btn btn-outline-primary go_back">Go Back</a> -->
-            <button class="go_back button" onclick="openNav()">More Options</button>
-        </div>
-        <% if(weather_bool){ %>
-        <div class="container mt-4">
-            <div class="row ">
-                <div class="col-md-4">
-                    <div class="card text-center">
-                        <div class="card-body">
-                            <h5 class="card-title">Current Weather in <%=weather_location%></h5>
-                            <h6><%=weather_desc%></h6>
-                            <img id="weatherIcon" src="<%=weather_icon %>" alt="Weather Icon" class="img-fluid mb-3" style="max-width: 50px;">
-                            <p id="temperature" class="h4"><%= weather_temp %> degree celcius</p>
+            <div class="search-container">
+                <form action="/guest/search" method="post">
+                    <input type="text" class="searchTerm" name="searchTerm" id="searchTerm" placeholder="search">
+                    <button type="submit"><i class="fa fa-search"></i></button>
+                </form>
+            </div>
+            <!-- <a href="/guest-homepage"><button class="search_button btn btn-outline-primary">Go Back</button></a> -->
+            <div>
+                <!-- <a href="/guest-homepage" class="btn btn-outline-primary go_back">Go Back</a> -->
+                <button class="go_back button" onclick="openNav()">More Options</button>
+            </div>
+            <% if(weather_bool){ %>
+            <div class="container mt-4">
+                <div class="row ">
+                    <div class="col-md-4">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h5 class="card-title">Current Weather in <%=weather_location%></h5>
+                                <h6><%=weather_desc%></h6>
+                                <img id="weatherIcon" src="<%=weather_icon %>" alt="Weather Icon" class="img-fluid mb-3" style="max-width: 50px;">
+                                <p id="temperature" class="h4"><%= weather_temp %> degree celcius</p>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
+            <% } %>
         </div>
-        <% } %>
-
         <% if (typeof All_listings!=undefined && All_listings.length>0) {%>
         
         <section class="houses" id="main">
@@ -98,7 +98,7 @@
         </section>
         <% }else{ %>
             <p>no results found!</p>
-            <button onclick="history.back()">Go Back</button>
+            <button onclick="history.back()" class="btn btn-secondary">Go Back</button>
         <% } %>
         <script>
             function openNav() {
