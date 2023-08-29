@@ -76,6 +76,7 @@ document.addEventListener("DOMContentLoaded",function(){
             return false;
         }
         num_days=(end_time-start_time)/1000*60*60*24;
+        return true;
 
     }
 

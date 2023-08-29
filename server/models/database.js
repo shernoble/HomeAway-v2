@@ -1,7 +1,7 @@
 const mongoose=require("mongoose");
 const bcrypt=require("bcrypt");
 
-mongoose.connect(process.env.MONGODB_URI,{useUnifiedTopology:true});
+const connection=mongoose.connect(process.env.MONGODB_URI,{useUnifiedTopology:true});
 
 const db=mongoose.connection;
 db.on('error',console.error.bind(console,'connection error :'));
@@ -14,3 +14,5 @@ require('./Guest');
 require('./Host');
 require('./Listing');
 require('./Booking');
+
+module.exports=connection;

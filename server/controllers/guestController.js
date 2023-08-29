@@ -1,9 +1,13 @@
 require('../models/database');
 
-const https=require("https");
 const bcrypt=require("bcrypt");
 const saltRounds=10;
 const alert=require("alert");
+
+const myusername="user1";
+const mypassword="mypassword";
+let session;
+
 
 const Guest=require('../models/Guest');
 const Booking=require('../models/Booking');
@@ -27,13 +31,51 @@ exports.guestStartingPagePost=async(req,res) => {
     res.redirect("/guest/homepage/?location="+place+"&guests="+num_guests);
 }
 
+exports.guestHomePageFull=async(req,res) => {
+    // directy going without filter
+    // display page with all listings
+    // handle filters for whole db 
+    // no filter upon filter
+    try{
+        let property_type=req.query.property;
+        console.log("property:"+property_type);
+        if(property_type !== undefined && property_type!=="All"){
+            Listing.find({ PropertyType: property_type })
+            .then(function(results){
+                res.render("guest-homepage",{All_listings:results,weather_bool:false,weather_location:"all",guests:0});
+            })
+            .catch(function(error){
+                res.render("error");
+                console.log(error);
+            
+            })
+        }
+        if(property_type ==undefined || property_type=="All"){
+            Listing.find()
+            .then(function(results){
+                res.render("guest-homepage",{All_listings:results,weather_bool:false,weather_location:"all",guests:0});
+            })
+            .catch(function(error){
+                res.render("error");
+                console.log(error);
+            
+            })
+        }
+    }
+    catch(err){
+        console.log("error:"+err);
+        res.render("error");
+    }
+
+}
+
 exports.guestHomePage=async(req,res) => {
     try{
         let place=req.query.location;
         console.log("place:"+place);
         let num_guests=req.query.guests;
-        // check for house filter as well
-        let query = {
+        let query;
+        query = {
             $and: [
                 { 
                     'Address.District': place 
@@ -51,31 +93,34 @@ exports.guestHomePage=async(req,res) => {
             console.log("correct hehe");
             query.$and.push({ PropertyType: property_type });
         }
-        
-        Listing.find(query)
-        .then(function(results){
-            const url="https://api.openweathermap.org/data/2.5/weather?q="+place+"&appid="+process.env.WEATHER_API_KEY+"&units=metric";
-            fetch(url)
-                .then(response => response.json())
-                    .then(weatherData => {
-                        // console.log(weatherData);
-                        const temp=weatherData.main.temp;
-                        // const temp2 = (temp - 32) * 5 / 9;
-                        const weatherDesc=weatherData.weather[0].description;
-                        const icon=weatherData.weather[0].icon;
-                        const icon_url="https://openweathermap.org/img/wn/"+icon+"@2x.png";
-                        res.render("guest-homepage",{All_listings:results, weather_desc:weatherDesc,weather_temp:temp,weather_icon:icon_url,weather_location:place,weather_bool:true,guests:num_guests});
-                    })
-            .catch(error => {
-                console.log("error",error);
-            })
+        console.log("query:"+query);
+        // if( query !== undefined){
+            console.log("herhoerh");
+            Listing.find(query)
             
-        })
-        .catch(function(error){
-            res.render("error");
-            console.log(error);
-        
-        })
+            .then(function(results){
+                // if(num_guests){
+                const url="https://api.openweathermap.org/data/2.5/weather?q="+place+"&appid="+process.env.WEATHER_API_KEY+"&units=metric";
+                fetch(url)
+                    .then(response => response.json())
+                        .then(weatherData => {
+                            // console.log(weatherData);
+                            const temp=weatherData.main.temp;
+                            // const temp2 = (temp - 32) * 5 / 9;
+                            const weatherDesc=weatherData.weather[0].description;
+                            const icon=weatherData.weather[0].icon;
+                            const icon_url="https://openweathermap.org/img/wn/"+icon+"@2x.png";
+                            res.render("guest-homepage",{All_listings:results, weather_desc:weatherDesc,weather_temp:temp,weather_icon:icon_url,weather_location:place,weather_bool:true,guests:num_guests});
+                        })
+                .catch(error => {
+                    console.log("error",error);
+                })
+            })
+            .catch(function(error){
+                res.render("error");
+                console.log(error);
+            
+            })
         
     }
     catch(err){
@@ -86,6 +131,11 @@ exports.guestHomePage=async(req,res) => {
 
 exports.guestLogin=async(req,res) => {
     try{
+        const reserve_id=req.query.res_id;
+        console.log("res-d:"+reserve_id);
+        // if(reserve_id !== undefined){
+        //     res.redirect("/guest/reserve/"+reserve_id);
+        // }
         res.render('guest-login');
     }
     catch(err){
@@ -97,6 +147,7 @@ exports.guestLogin=async(req,res) => {
 exports.guestLoginPost=async(req,res) => {
     try{
         // check login creds
+        const res_id=req.query.res_id;
         const email=req.body.email;
         const pass=req.body.password;
         Guest.find({'Email':email})
@@ -106,6 +157,10 @@ exports.guestLoginPost=async(req,res) => {
                 bcrypt.compare(pass,results[0].password,function(err,result){
                     
                     if(result){
+                        // create session
+                        session=req.session;
+                        session.userid=email;
+                        console.log(req.session);
                         res.redirect("/guest/startingPage");
                     }
                     else{
@@ -189,29 +244,21 @@ exports.guestRegisterPost=async(req,res) => {
     }
 }
 
-// exports.guestHomepage=async(req,res) => {
-//     try{
-//         Listing.find({})
-//         .then(function(results){
-//             res.render("guest-homepage",{All_listings:results,weather_bool:false});
-//         })
-//         .catch(function(error){
-//             res.render("error");
-//             console.log(error);
-
-//         })
-//     }
-//     catch(err){
-//         console.log(err);
-//         res.render("error");
-//     }
-// }
+exports.guestLogout=async(req,res) => {
+        req.session.destroy();
+        res.redirect('/');
+}
 
 exports.guestFilter=async(req,res) => {
     const ch=req.body.choice;
     const place=req.query.location;
     const num_guests=req.query.guests;
-    res.redirect("/guest/homepage/?location="+place+"&guests="+num_guests+"&property="+ch);
+    if(place !== undefined && place!="all"){
+        res.redirect("/guest/homepage/?location="+place+"&guests="+num_guests+"&property="+ch);
+    }
+    else{
+        res.redirect("/guest/homepagefull/?property="+ch);
+    }
     
 }
 
@@ -264,32 +311,42 @@ exports.guestReserve=async(req,res) => {
 
 exports.guestReservePost=async(req,res) => {
     try{
-        // get listingID
-        // do validation check in separate js file-NO, because repetition in calculating num of days
-        // ->check if dates are valid and number of guests is valid
-        // goes to confirmation page
 
-
-
+        // check sessions
+        session=req.session;
         const id=req.params.id;
-        console.log("reservation"+id);
-        const ci=new Date(req.body.checkin);
-        const co=new Date(req.body.checkout);
+        console.log("session user:"+session);
+        if(session.userid){
+            console.log("hello");
+            
+            console.log("reservation"+id);
+            const ci=new Date(req.body.checkin);
+            const co=new Date(req.body.checkout);
 
-            const diffms=Math.abs(co-ci);
-            const diffInDays = Math.ceil(diffms / (1000 * 60 * 60 * 24));
-            Listing.find({ListingID:id})
-                .then(function(results){
-                    // alert("working");
-                    console.log(results[0]);
-                    res.render("guest-confirmation",{Listing:results[0],num_days:diffInDays, startDate:ci,endDate:co});
-                })
-                .catch(function(err){
-                    // render error page: NOT FOUND ERROR
-                    // res.status(500).send({message:err.message || "Error Occured"});
-                    console.log(err);
-                    res.render("error");
-                });
+                const diffms=Math.abs(co-ci);
+                const diffInDays = Math.ceil(diffms / (1000 * 60 * 60 * 24));
+                Listing.find({ListingID:id})
+                    .then(function(results){
+                        // alert("working");
+                        console.log(results[0]);
+                        res.render("guest-confirmation",{Listing:results[0],num_days:diffInDays, startDate:ci,endDate:co});
+                    })
+                    .catch(function(err){
+                        // render error page: NOT FOUND ERROR
+                        // res.status(500).send({message:err.message || "Error Occured"});
+                        console.log(err);
+                        res.render("error");
+                    });
+        }
+        else{
+            alert("you are required to login first");
+            console.log("user not logged in");
+            const queryParams={
+                reserve_id:id
+            }
+            // pass reservation id and redirect to reservation page on login
+            res.redirect("/guest/login?res_id="+id);
+        }
     }
     catch(err){
         console.log(err);
@@ -297,9 +354,9 @@ exports.guestReservePost=async(req,res) => {
     }
 }
 
-exports.guestConfirmBooking=async(req,res) => {
-    // theres no 
-}
+// exports.guestConfirmBooking=async(req,res) => {
+//     // theres no 
+// }
 
 exports.guestConfirmBookingPost=async(req,res) => {
     try{
@@ -321,8 +378,6 @@ exports.guestConfirmBookingPost=async(req,res) => {
         FromDate:date1,
         ToDate:date2
     });
-    // Booking.create(new_booking)
-    // .then(function(){
         Booking.findOne({ListingID:List_id})
         .then((document) => {
             if(document){
@@ -334,6 +389,10 @@ exports.guestConfirmBookingPost=async(req,res) => {
                 console.log();
 
                 if(!(to2<ti1 || ti2>to1 )){
+                    // direct back to reservation page
+                    // res.redirect(history.back());
+                    const previousPage = req.headers.referer || '/';
+                    res.redirect(previousPage);
                     console.log("booking dates not available.");
                 }
                 else{

@@ -1,7 +1,14 @@
 require('../models/database');
 
+const sessions = require("express-session");
 const bcrypt=require("bcrypt");
 const saltRounds=10;
+// const passport=require("passport");
+// const LocalStrategy = require('passport-local').Strategy;
+const myusername="user1";
+const mypassword="mypassword";
+let session;
+
 const alert=require("alert");
 
 const Admin=require('../models/Admin');
@@ -24,16 +31,17 @@ exports.adminLoginPost=async(req,res) => {
         // check login creds
         const email=req.body.email;
         const pass=req.body.password;
-        console.log(email);
-        // console.log(pass);
         Admin.find({'Email':email})
         .then(function(results){
             if(results.length!=0){
                 // check pass
-                // console.log("yes res"+results.length);
                 bcrypt.compare(pass,results[0].password,function(err,result){
                     
                     if(result){
+                        // create session
+                        session=req.session;
+                        session.userid=email;
+                        console.log(req.session);
                         res.redirect("/admin/homepage");
                     }
                     else{
@@ -51,11 +59,13 @@ exports.adminLoginPost=async(req,res) => {
             }
         })
         .catch(function(error){
-            res.status(500).send({message:error.message || "Error Occured"});
+            res.render("error");
+            console.log(error);
         })
     }
     catch(err){
-        res.status(500).send({message:err.message || "Error Occured"});
+        res.render("error");
+        console.log(err);
     }
 }
 
@@ -71,46 +81,52 @@ exports.adminRegister=async(req,res) => {
 exports.adminRegisterPost=async(req,res) => {
     try{
         const username=req.body.username;
-        const email=req.body.email;
-        const phone=req.body.phone;
-        const pass=req.body.password;
-        // console.log(username);
-        // console.log(email);
-
-
-        Admin.find({Email:email})
-        .then(function(results){
-            console.log(results);
-            if(results.length!=0){
-                // alert to change
-                alert("email already in use");
-                res.redirect("/admin/register");
-            }
-            else{
-                // register user
-                bcrypt.hash(pass,saltRounds,function(err, hash){
-                    Admin.create({
-                        UserName:username,
-                        Email:email,
-                        PhoneNumber:phone,
-                        password:hash
+            const email=req.body.email;
+            const phone=req.body.phone;
+            const pass=req.body.password;
+            // console.log(username);
+            // console.log(email);
+    
+    
+            Admin.find({'Email':email})
+            .then(function(results){
+                console.log(results);
+                if(results.length!=0){
+                    // alert to change
+                    alert("email already in use");
+                    res.redirect("/admin/register");
+                }
+                else{
+                    // register user
+                    bcrypt.hash(pass,saltRounds,function(err, hash){
+                        Admin.create({
+                            UserName:username,
+                            Email:email,
+                            PhoneNumber:phone,
+                            password:hash
+                        })
+                        .then(function(){
+                            res.redirect("/admin/login");
+                        })
+                        .catch(function(err){
+                            res.status(500).send({message:err.message || "Error Occured"});
+                        })
+                    
                     })
-                    .then(function(){
-                        res.redirect("/admin/login");
-                    })
-                    .catch(function(err){
-                        res.status(500).send({message:err.message || "Error Occured"});
-                    })
-                
-                })
-                
+                    
+    
+                }
+            })
+        }
+        catch(err){
+            res.render("error");
+            console.log(err);
+        }
+}
 
-            }
-        })
-    }
-    catch(err){
-        res.render("error");
-    }
+exports.adminLogout=async(req,res) => {
+    req.session.destroy();
+    res.redirect('/');
 }
 
 exports.adminHomePage=async(req,res) => {

@@ -4,6 +4,11 @@ const bcrypt=require("bcrypt");
 const saltRounds=10;
 const alert=require("alert");
 
+const myusername="user1";
+const mypassword="mypassword";
+let session;
+
+
 const Host=require("../models/Host");
 const Listing=require("../models/Listing");
 const Booking=require("../models/Booking");
@@ -32,6 +37,10 @@ exports.hostLoginPost=async(req,res) => {
                 bcrypt.compare(pass,results[0].password,function(err,result){
                     
                     if(result){
+                        // create session
+                        session=req.session;
+                        session.userid=email;
+                        console.log(req.session);
                         res.redirect("/host/homepage");
                     }
                     else{
@@ -112,4 +121,9 @@ exports.hostRegisterPost=async(req,res) => {
             res.render("error");
             console.log(err);
         }
+}
+
+exports.hostLogout=async(req,res) => {
+    req.session.destroy();
+    res.redirect('/');
 }

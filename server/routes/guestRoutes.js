@@ -6,8 +6,9 @@ router.get("/login",guestController.guestLogin);
 router.get("/register",guestController.guestRegister);
 router.get('/startingPage',guestController.guestStartingPage);
 router.get('/homepage',guestController.guestHomePage);
+router.get('/homepagefull',guestController.guestHomePageFull);
 router.get('/reserve/:id',guestController.guestReserve);
-router.get('/confirmBooking/:id',guestController.guestConfirmBooking);
+// router.get('/confirmBooking/:id',guestController.guestConfirmBooking);
 
 
 router.post("/login",guestController.guestLoginPost);

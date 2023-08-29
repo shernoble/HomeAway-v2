@@ -1,5 +1,6 @@
 const mongoose=require("mongoose");
-const bcrypt=require("bcrypt");
+
+const passportLocalMongoose=require("passport-local-mongoose");
 
 const adminSchema= new mongoose.Schema({
     UserName:{
@@ -21,5 +22,6 @@ const adminSchema= new mongoose.Schema({
 });
 
 adminSchema.index({UserName:'text',Email:'text'});
+// adminSchema.plugin(passportLocalMongoose,{usernameField:'Email'});
 
 module.exports=mongoose.model('Admin',adminSchema);

@@ -12,14 +12,14 @@ document.addEventListener("DOMContentLoaded",function()
     }
     
     const form_signup=document.getElementById("register");
-    // if(form_signup!=null){
+    if(form_signup!=null){
         form_signup.addEventListener("submit",function(event) {
             console.log("submishfo");
             if(!validsignup()){
                 event.preventDefault();
             }
         })
-    // }
+    }
     
     
     function validLogin(){

@@ -1,6 +1,11 @@
 const express=require("express");
 const router=express.Router();
 const adminController=require("../controllers/adminController");
+const passport=require("passport");
+
+// const adminPassport=require("../../config/passport");
+
+// router.use(adminPassport);
 
 router.get("/login",adminController.adminLogin);
 
@@ -11,6 +16,7 @@ router.get("/reports",adminController.adminReports);
 router.get("/verification",adminController.adminVerification);
 router.get("/register",adminController.adminRegister);
 
+// middleware=passport.authenticate('local')->local strategy
 router.post("/login",adminController.adminLoginPost);
 router.post("/register",adminController.adminRegisterPost);
 router.post("/delete/:option",adminController.adminDelete);
