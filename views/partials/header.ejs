@@ -13,30 +13,44 @@ integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgr
     .drop-css{
         height: 50px;
     }
+    .navbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+    }
+    .heading1 {
+        margin: 0;
+    }
+    .profile-img {
+        margin-right: 10px;
+        color: white;
+    }
 </style>
 </head>
 <body class="d-flex flex-column min-vh-100">
 <div class="navbar header">
     <a href="/guest/homepagefull"><h2 class="heading1">HomeAway</h2></a>
-    
-    <div class="dropdown show drop-css">
-            <div class="container mt-5">
-                <div class="dropdown">
-                    <a class="dropdown-toggle text-reset" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="far fa-user fa-xl profile-img"></i>
-                    </a>
-                    <!-- show only if logged in  -->
-                    <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuLink">
-                        <a class="dropdown-item" href="/profile">Profile</a>
-                        <a class="dropdown-item" href="/logout">Logout</a>
-                        <a class="dropdown-item" href="/report">Report</a>
-                    </div>
-                    <!-- if no login-show login and signup option -->
-                    
-                </div>
-            </div>
 
-    </div>
+    <div class="dropdown show drop-css">
+        <div class="container mt-5">
+            <div class="dropdown">
+            <a class="dropdown-toggle text-reset" href="#" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="far fa-user fa-xl profile-img"></i>
+            </a>
+            <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuLink">
+                <% if (userLoggedIn) { %>
+                <a class="dropdown-item" href="/guest/profile">Profile</a>
+                <a class="dropdown-item" href="/guest/logout">Logout</a>
+                <a class="dropdown-item" href="/guest/report">Report</a>
+                <% } else { %>
+                <a class="dropdown-item" href="/guest/login">Login</a>
+                <a class="dropdown-item" href="/guest/register">Signup</a>
+                <% } %>
+            </div>
+            </div>
+        </div>
+        </div>
 </div>
 
 

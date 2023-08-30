@@ -38,11 +38,14 @@ exports.guestHomePageFull=async(req,res) => {
     // no filter upon filter
     try{
         let property_type=req.query.property;
+        let val=false;
+        session=req.session;
+        if(session.userid) val=true;
         console.log("property:"+property_type);
         if(property_type !== undefined && property_type!=="All"){
             Listing.find({ PropertyType: property_type })
             .then(function(results){
-                res.render("guest-homepage",{All_listings:results,weather_bool:false,weather_location:"all",guests:0});
+                res.render("guest-homepage",{All_listings:results,weather_bool:false,weather_location:"all",guests:0,userLoggedIn:val});
             })
             .catch(function(error){
                 res.render("error");
@@ -53,7 +56,7 @@ exports.guestHomePageFull=async(req,res) => {
         if(property_type ==undefined || property_type=="All"){
             Listing.find()
             .then(function(results){
-                res.render("guest-homepage",{All_listings:results,weather_bool:false,weather_location:"all",guests:0});
+                res.render("guest-homepage",{All_listings:results,weather_bool:false,weather_location:"all",guests:0,userLoggedIn:val});
             })
             .catch(function(error){
                 res.render("error");
@@ -71,6 +74,9 @@ exports.guestHomePageFull=async(req,res) => {
 
 exports.guestHomePage=async(req,res) => {
     try{
+        let val=false;
+        session=req.session;
+        if(session.userid) val=true;
         let place=req.query.location;
         console.log("place:"+place);
         let num_guests=req.query.guests;
@@ -110,7 +116,7 @@ exports.guestHomePage=async(req,res) => {
                             const weatherDesc=weatherData.weather[0].description;
                             const icon=weatherData.weather[0].icon;
                             const icon_url="https://openweathermap.org/img/wn/"+icon+"@2x.png";
-                            res.render("guest-homepage",{All_listings:results, weather_desc:weatherDesc,weather_temp:temp,weather_icon:icon_url,weather_location:place,weather_bool:true,guests:num_guests});
+                            res.render("guest-homepage",{All_listings:results, weather_desc:weatherDesc,weather_temp:temp,weather_icon:icon_url,weather_location:place,weather_bool:true,guests:num_guests,userLoggedIn:val});
                         })
                 .catch(error => {
                     console.log("error",error);
@@ -245,8 +251,10 @@ exports.guestRegisterPost=async(req,res) => {
 }
 
 exports.guestLogout=async(req,res) => {
+        console.log("session:"+req.session);
         req.session.destroy();
-        res.redirect('/');
+        console.log("session:"+req.session);
+        res.redirect('/guest/homepagefull');
 }
 
 exports.guestFilter=async(req,res) => {
@@ -265,11 +273,14 @@ exports.guestFilter=async(req,res) => {
 exports.guestSearch=async(req,res) => {
     try{
         const item=req.body.searchTerm;
+        session=req.session;
+        let val=false;
+        if(session.userid) val=true;
         console.log("term:"+item);
         // res.render("guest-login");
         Listing.find({$text:{$search:item}})
             .then(function(results){
-                res.render("guest-homepage",{All_listings:results,weather_bool:false});
+                res.render("guest-homepage",{All_listings:results,weather_bool:false,userLoggedIn:val});
             })
             .catch(function(error){
                 // res.status(500).send({message:error.message || "Error Occured"});
@@ -290,10 +301,13 @@ exports.guestReserve=async(req,res) => {
         // get listingID
         const id=req.params.id;
         console.log("id:"+id);
+        session=req.session;
+        let val=false;
+        if(session.userid) val=true;
         Listing.findOne({ListingID:id})
         .then(function(results){
             // console.log("len:"+results);
-            res.render("guest-reservation",{Listing:results});
+            res.render("guest-reservation",{Listing:results,userLoggedIn:val});
         })
         .catch(function(err){
             // res.status(500).send({message:err.message || "Error Occured"});
@@ -329,7 +343,7 @@ exports.guestReservePost=async(req,res) => {
                     .then(function(results){
                         // alert("working");
                         console.log(results[0]);
-                        res.render("guest-confirmation",{Listing:results[0],num_days:diffInDays, startDate:ci,endDate:co});
+                        res.render("guest-confirmation",{Listing:results[0],num_days:diffInDays, startDate:ci,endDate:co,userLoggedIn:true});
                     })
                     .catch(function(err){
                         // render error page: NOT FOUND ERROR

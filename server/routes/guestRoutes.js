@@ -8,6 +8,7 @@ router.get('/startingPage',guestController.guestStartingPage);
 router.get('/homepage',guestController.guestHomePage);
 router.get('/homepagefull',guestController.guestHomePageFull);
 router.get('/reserve/:id',guestController.guestReserve);
+router.get("/logout",guestController.guestLogout);
 // router.get('/confirmBooking/:id',guestController.guestConfirmBooking);
 
 
