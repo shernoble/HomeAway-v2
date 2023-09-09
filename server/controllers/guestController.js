@@ -12,6 +12,7 @@ let session;
 const Guest=require('../models/Guest');
 const Booking=require('../models/Booking');
 const Listing=require('../models/Listing');
+const Report=require('../models/Report');
 
 
 
@@ -445,6 +446,60 @@ exports.guestConfirmBookingPost=async(req,res) => {
     catch(err){
         console.log(err);
         res.render("error");
+    }
+}
+
+exports.guestReport=async(req,res) => {
+    try{
+        session=req.session;
+        let val=false;
+        if(session.userid) val=true;
+        res.render("guest-report",{userLoggedId:val});
+    }
+    catch(err){
+        console.log("err:"+err);
+        res.render("error");
+    }
+}
+
+exports.guestReportPost=async(req,res) => {
+    try{
+        // get vals
+        session=req.session;
+        let val=false;
+        if(session.userid) val=true;
+        let category=req.body.category;
+        console.log("cat:"+category);
+        let desc=req.body.description;
+        let subject=null
+        if(category=="others"){
+            subject=req.body.subject;
+        }
+        //create object
+        // send it to mongodb
+        // get user login as well
+
+        const new_report=new Report({
+            guestID:session.userid,
+            category:category,
+            subject:subject,
+            description:desc
+        });
+        Report.create(new_report)
+                    .then(function(){
+                        console.log("report sent");
+                        res.render("guest-report",{userLoggedId:val});
+
+                    })
+                    .catch(function(err){
+                        console.log("error while inserting"+err);
+                        res.render("error");
+                    })
+
+    }
+    catch(err){
+        console.log("err:"+err);
+        res.render('error');
     }
 }
 

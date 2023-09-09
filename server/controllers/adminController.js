@@ -15,6 +15,7 @@ const Admin=require('../models/Admin');
 const Listing=require('../models/Listing');
 const Guest=require('../models/Guest');
 const Host=require('../models/Host');
+const Report=require('../models/Report');
 
 
 exports.adminLogin=async(req,res) => {
@@ -125,15 +126,38 @@ exports.adminRegisterPost=async(req,res) => {
 }
 
 exports.adminLogout=async(req,res) => {
-    req.session.destroy();
-    res.redirect('/');
+    try{
+        req.session.destroy();
+        res.redirect('/');
+    }
+    catch(err){
+        res.render("error");
+        console.log("error:"+err);
+    }
+}
+
+exports.adminProfile=async(req,res) => {
+    try{
+        session=req.session;
+        if(!session.userid) res.render("admin-register");
+    }
+    catch(err){
+        res.render("error");
+        console.log("error:"+err);
+    }
 }
 
 exports.adminHomePage=async(req,res) => {
     try{
+        // check login
+        session=req.session;
+        if(!session.userid) res.render('admin-register');
         // find listings
-        const results=await Listing.find({});
-        res.render('admin-homepage',{All_listings:results});
+        else{
+            const results=await Listing.find({});
+            res.render('admin-homepage',{All_listings:results});
+        }
+        
     }
     catch(err){
         res.status(500).send({message:err.message || "Error Occured"});
@@ -142,9 +166,12 @@ exports.adminHomePage=async(req,res) => {
 
 exports.adminGuestlist=async(req,res) => {
     try{
-
-        const results=await Guest.find({});
-        res.render('admin-guestlist',{guestList:results});
+        session=req.session;
+        if(!session.userid) res.render('admin-register');
+        else{
+            const results=await Guest.find({});
+            res.render('admin-guestlist',{guestList:results});
+        }
     }
     catch(err){
         res.status(500).send({message:err.message || "Error Occured"});
@@ -153,8 +180,13 @@ exports.adminGuestlist=async(req,res) => {
 
 exports.adminHostlist=async(req,res) => {
     try{
-        const results=await Host.find({});
-        res.render('admin-hostlist',{hostList:results});
+        session=req.session;
+        if(!session.userid) res.render('admin-register');
+        else{
+            const results=await Host.find({});
+            res.render('admin-hostlist',{hostList:results});
+        }
+        
     }
     catch(err){
         res.status(500).send({message:err.message || "Error Occured"});
@@ -163,52 +195,70 @@ exports.adminHostlist=async(req,res) => {
 
 exports.adminReports=async(req,res) => {
     try{
-        res.render('admin-reports');
+        session=req.session;
+        if(!session.userid) res.render('admin-register');
+        else{
+            const results=await Report.find({});
+            res.render('admin-reports',{report:results});
+        }
     }
     catch(err){
-        res.status(500).send({message:err.message || "Error Occured"});
+        // res.status(500).send({message:err.message || "Error Occured"});
+        res.render("error");
+        console.log("error : "+err);
     }
 }
 
-exports.adminVerification=async(req,res) => {
-    try{
-        res.render('admin-verification');
-    }
-    catch(err){
-        res.status(500).send({message:err.message || "Error Occured"});
-    }
-}
+// exports.adminVerification=async(req,res) => {
+//     try{
+//         res.render('admin-verification');
+//     }
+//     catch(err){
+//         res.status(500).send({message:err.message || "Error Occured"});
+//     }
+// }
 
 exports.adminDelete=async(req,res) => {
-    const item=req.params.option;
-    const id=req.body.elementID;
-    if(item=='listing'){
-        Listing.findOneAndDelete({ListingID:id})
-        .then(function(doc){
-            console.log("deleted item : "+doc);
-        })
-        .catch(function(err){
-            res.status(500).send({message:err.message || "Error Occured"});
-        })
+    try{
+        session=req.session;
+        if(!session.userid) res.render('admin-register');
+        else{
+            const item=req.params.option;
+            const id=req.body.elementID;
+            if(item=='listing'){
+                Listing.findOneAndDelete({ListingID:id})
+                .then(function(doc){
+                    console.log("deleted item : "+doc);
+                })
+                .catch(function(err){
+                    res.status(500).send({message:err.message || "Error Occured"});
+                })
+            }
+            else if(item=='guest'){
+                Guest.findByIdAndDelete({_id:id})
+                .then(function(doc){
+                    console.log("deleted item : "+doc);
+                })
+                .catch(function(err){
+                    res.status(500).send({message:err.message || "Error Occured"});
+                })
+            }
+            else if(item=='host'){
+                Host.findByIdAndDelete({_id:id})
+                .then(function(doc){
+                    console.log("deleted item : "+doc);
+                })
+                .catch(function(err){
+                    res.status(500).send({message:err.message || "Error Occured"});
+                })
+            }
+        }
     }
-    else if(item=='guest'){
-        Guest.findByIdAndDelete({_id:id})
-        .then(function(doc){
-            console.log("deleted item : "+doc);
-        })
-        .catch(function(err){
-            res.status(500).send({message:err.message || "Error Occured"});
-        })
+    catch(err){
+        res.render("error");
+        console.log("error : "+err);
     }
-    else if(item=='host'){
-        Host.findByIdAndDelete({_id:id})
-        .then(function(doc){
-            console.log("deleted item : "+doc);
-        })
-        .catch(function(err){
-            res.status(500).send({message:err.message || "Error Occured"});
-        })
-    }
+    
 
 }
 

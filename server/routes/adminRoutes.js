@@ -13,8 +13,10 @@ router.get("/homepage",adminController.adminHomePage);
 router.get("/guestList",adminController.adminGuestlist);
 router.get("/hostList",adminController.adminHostlist);
 router.get("/reports",adminController.adminReports);
-router.get("/verification",adminController.adminVerification);
+// router.get("/verification",adminController.adminVerification);
 router.get("/register",adminController.adminRegister);
+router.get("/logout",adminController.adminLogout);
+// router.get("/pr")
 
 // middleware=passport.authenticate('local')->local strategy
 router.post("/login",adminController.adminLoginPost);

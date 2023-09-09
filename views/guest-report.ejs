@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Report Form</title>
+
+    <%- include ("./partials/header") -%>
+    
+
+    </head>
+    <body>
+    <div class="container mt-5">
+        <h1 class="text-center">User Report Form</h1>
+        <form action="/guest/report" method="post">
+        <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <select class="form-select" id="category" name="category">
+            <option value="host_complaint">Host Complaint</option>
+            <option value="others">Others</option>
+            </select>
+        </div>
+        <div class="mb-3" id="subjectField" style="display: none;">
+            <label for="subject" class="form-label">Subject</label>
+            <input type="text" class="form-control" id="subject" name="subject">
+        </div>
+        <div class="mb-3">
+            <label for="description" class="form-label">Description</label>
+            <textarea class="form-control" id="description" name="description" rows="4" required></textarea>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        // JavaScript to show/hide subject field based on category selection
+        const categoryField = document.getElementById('category');
+        const subjectField = document.getElementById('subjectField');
+        categoryField.addEventListener('change', function () {
+        if (categoryField.value === 'others') {
+            subjectField.style.display = 'block';
+        } else {
+            subjectField.style.display = 'none';
+        }
+        });
+    </script>
+</body>
+</html>
