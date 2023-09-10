@@ -326,25 +326,28 @@ exports.guestReserve=async(req,res) => {
 
 exports.guestReservePost=async(req,res) => {
     try{
-
+        console.log("hehriehr");
         // check sessions
         session=req.session;
         const id=req.params.id;
-        console.log("session user:"+session);
+        console.log("session user:"+session.userid);
         if(session.userid){
             console.log("hello");
             
             console.log("reservation"+id);
             const ci=new Date(req.body.checkin);
             const co=new Date(req.body.checkout);
+            console.log('sd:'+req.body.checkin);
+            console.log('ed:'+co);
 
                 const diffms=Math.abs(co-ci);
                 const diffInDays = Math.ceil(diffms / (1000 * 60 * 60 * 24));
                 Listing.find({ListingID:id})
                     .then(function(results){
                         // alert("working");
-                        console.log(results[0]);
-                        res.render("guest-confirmation",{Listing:results[0],num_days:diffInDays, startDate:ci,endDate:co,userLoggedIn:true});
+                        // console.log(results[0]);
+
+                        res.render("guest-confirmation",{Listing:results[0],num_days:diffInDays, startDate:req.body.checkin,endDate:req.body.checkout,userLoggedIn:true});
                     })
                     .catch(function(err){
                         // render error page: NOT FOUND ERROR
@@ -379,73 +382,100 @@ exports.guestConfirmBookingPost=async(req,res) => {
         // get data
     // create new booking object
     //add to data
-    const List_id=req.query.listID;
-    // console.log(List_id);
-    const host_id=req.query.hID;
+    session=req.session;
+    // console.log("session user conf:"+session.userid);
+    const { listID,hostID,checkin,checkout }=req.body;
+    // console.log('listID:'+listID);
+    // console.log('checkin:'+checkin);
     // console.log(host_id);
-    const date1=new Date(req.query.startDate);
-    const date2=new Date(req.query.endDate);
+    const date1=new Date(checkin);
+    const date2=new Date(checkout);
+    // console.log('date1:'+date1);
+
+    // console.log(req.query.startDate);
+    // console.log('date2:'+date2);
+    let flag=false;
 
     const new_booking=new Booking ({
-        ListingID:List_id,
-        GuestID:"B123",
-        HostID:host_id,
-        FromDate:date1,
-        ToDate:date2
+        ListingID:listID,
+        GuestID:session.userid,
+        HostID:hostID,
+        FromDate:checkin,
+        ToDate:checkout
     });
-        Booking.findOne({ListingID:List_id})
-        .then((document) => {
-            if(document){
-                const ti1=date1.getTime();
-                const to1=date2.getTime();
-                const ti2=document.FromDate.getTime();
-                const to2=document.ToDate.getTime();
+        Booking.find({ListingID:listID})
+        .then((documents) => {
+            console.log(documents);
+            if(documents.length!=0){
+                for(let i=0;i<documents.length;i++){
+                    const ti1=date1.getTime();
+                    const to1=date2.getTime();
+                    const ti2=documents[i].FromDate.getTime();
+                    const to2=documents[i].ToDate.getTime();
 
-                console.log();
+                    // console.log();
 
-                if(!(to2<ti1 || ti2>to1 )){
-                    // direct back to reservation page
-                    // res.redirect(history.back());
-                    const previousPage = req.headers.referer || '/';
-                    res.redirect(previousPage);
-                    console.log("booking dates not available.");
+                    if(!(to2<ti1 || ti2>to1 )){
+                        // direct back to reservation page
+                        // res.redirect(history.back());
+                        
+                        console.log("booking dates not available.");
+                        flag=true;
+                        break;
+                        // res.status(400).json({ success: false });
+                        // break;
+                    }
+                
+                    else if(i==documents.length-1){
+                        Booking.create(new_booking)
+                        .then(function(){
+                            console.log("inserted booking");
+                            res.json({ success: true });
+                            // res.render("congrats",{userLoggedIn:true});
+
+
+                        })
+                        .catch(function(err){
+                            console.log("error while inserting"+err);
+                            // console.log(err);
+                            res.status(400).json({ success: false });
+                            // res.render("error");
+                        })
+                    }
                 }
-                else{
-                    Booking.create(new_booking)
-                    .then(function(){
-                        console.log("inserted booking");
-                        res.render("congrats");
-
-                    })
-                    .catch(function(err){
-                        console.log("error while inserting"+err);
-                        // console.log(err);
-                        res.render("error");
-                    })
+                if(flag){
+                    // const previousPage = req.headers.referer || '/';
+                    // res.redirect(previousPage);
+                    res.status(400).json({ success: false });
                 }
             }
+            
             else{
                 Booking.create(new_booking)
                     .then(function(){
                         console.log("inserted booking");
-                        res.render("congrats");
+                        // res.render("congrats");
+                        res.json({ success: true });
 
                     })
                     .catch(function(err){
                         console.log("error while inserting"+err);
-                        res.render("error");
+                        // res.render("error");
+                        res.status(400).json({ success: false });
                     })
             }
         })
         .catch((error) => {
             console.log("error while searching for doc "+error);
-            res.render("error")
+            // res.render("error");
+            res.status(400).json({ success: false });
         })
 
     }
     catch(err){
         console.log(err);
-        res.render("error");
+        // res.render("error");
+        res.status(400).json({ success: false });
     }
 }
 
@@ -454,7 +484,7 @@ exports.guestReport=async(req,res) => {
         session=req.session;
         let val=false;
         if(session.userid) val=true;
-        res.render("guest-report",{userLoggedId:val});
+        res.render("guest-report",{userLoggedIn:val});
     }
     catch(err){
         console.log("err:"+err);
@@ -488,7 +518,7 @@ exports.guestReportPost=async(req,res) => {
         Report.create(new_report)
                     .then(function(){
                         console.log("report sent");
-                        res.render("guest-report",{userLoggedId:val});
+                        res.render("guest-report",{userLoggedIn:val});
 
                     })
                     .catch(function(err){

@@ -1,6 +1,7 @@
 const express = require("express");
 const sessions = require("express-session");
 const cookieParser=require("cookie-parser");
+const bodyParser=require('body-parser');
 // const MongoStore = require("connect-mongo");
 // const mongoose = require("mongoose");
 // const passport = require("passport");
@@ -15,6 +16,7 @@ const app=express();
 
 app.set('view engine','ejs');
 app.use(express.json());
+app.use(bodyParser.json());
 app.use(express.urlencoded({extended:true}));
 app.use(express.static("public"));
 app.use(cookieParser());

@@ -49,7 +49,7 @@ integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgr
     }
 </style>
 </head>
-<body class="d-flex flex-column min-vh-100">
+<body class="d-flex flex-column min-vh-100" id="bodyId">
 <div class="navbar header">
     <a href="/guest/homepagefull"><h2 class="heading1">HomeAway</h2></a>
 
@@ -60,7 +60,7 @@ integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgr
                 <i class="far fa-user fa-xl profile-img"></i>
             </a>
             <div class="dropdown-menu dropdown-menu-left" aria-labelledby="dropdownMenuLink">
-                <% if (userLoggedId) { %>
+                <% if (userLoggedIn) { %>
                 <a class="dropdown-item" href="/guest/profile">Profile</a>
                 <a class="dropdown-item" href="/guest/logout">Logout</a>
                 <a class="dropdown-item" href="/guest/report">Report</a>
