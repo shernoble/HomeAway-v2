@@ -30,7 +30,7 @@
                 <h5 style="margin-bottom: 0;"><%=element.Title%></h5>
                 <div class="listings-form">
                 <form action="/admin/delete/listing" method="post">     
-                    <input type="hidden" name="elementID" value=<%=element.ListingID%>></input>
+                    <input type="hidden" name="elementID" value=<%=element._id%>></input>
                     <span><button class="delete-button " data-bs-toggle="modal" data-bs-target="#modal1<%=element._id%>" type="button"><i class="fa-sharp fa-solid fa-trash" ></i></button></span>
                                 <!-- Modal -->
                                 <!-- aria:for helping users who use assitants in reading websites -->
@@ -45,18 +45,18 @@
                                             </button>
                                             </div>
                                             <div class="modal-body">
-                                            Are you sure you want to delete listing <b><%=element.ListingID%></b> ?
+                                            Are you sure you want to delete listing <b><%=element._id%></b> ?
                                             </div>
                                             <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                            <button type="submit" class="btn btn-primary">Confirm</button>
+                                                <button type="button" class="btn btn-success" data-bs-dismiss="modal">Close</button>
+                                                <button type="submit" class="btn btn-danger">Confirm</button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
                             </form> 
                             </div>
-                <p style="margin-bottom: 0;">ListingID : <a href="/listing/<%=element.ListingID%>"><%=element.ListingID%></p></a>
+                <p style="margin-bottom: 0;">ListingID : <a href="#"><%=element._id%></p></a>
                 <p style="margin-bottom: 0;"><%=element.Address.District %></p>
                 <p style="margin-bottom: 0;"><%=element.Address.State %></p>
                 

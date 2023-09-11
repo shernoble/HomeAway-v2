@@ -19,7 +19,7 @@
                     <td ><%= element.UserName %></td>
                     <td ><%=element.Email%></td>
                     <form action="/admin/delete/host" method="post">
-                        <input type="hidden" name="elementID" value="<%=element.UserID%>"></input>
+                        <input type="hidden" name="elementID" value="<%=element._id%>"></input>
                         <!-- The toggle tells Bootstrap what to do and the target tells Bootstrap which element is going to open -->
                         <td><button class="delete-button " data-bs-toggle="modal" data-bs-target="#modal1<%=element._id%>" type="button"><i class="fa-sharp fa-solid fa-trash" ></i></button></td>
                         <!-- Modal -->
@@ -38,8 +38,8 @@
                                     Are you sure you want to delete user <b><%=element.UserName%></b> ?
                                     </div>
                                     <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Confirm</button>
+                                    <button type="button" class="btn btn-success" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-danger">Confirm</button>
                                     </div>
                                 </div>
                             </div>

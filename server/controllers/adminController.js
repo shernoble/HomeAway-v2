@@ -285,11 +285,15 @@ exports.adminDelete=async(req,res) => {
         if(!session.userid) res.render('admin-register');
         else{
             const item=req.params.option;
+            console.log("item:"+item);
             const id=req.body.elementID;
+            console.log("id:"+id);
             if(item=='listing'){
-                Listing.findOneAndDelete({ListingID:id})
+                console.log("entered");
+                Listing.findOneAndDelete({_id:id})
                 .then(function(doc){
                     console.log("deleted item : "+doc);
+                    res.redirect('/admin/homepage');
                 })
                 .catch(function(err){
                     res.status(500).send({message:err.message || "Error Occured"});
@@ -299,6 +303,7 @@ exports.adminDelete=async(req,res) => {
                 Guest.findByIdAndDelete({_id:id})
                 .then(function(doc){
                     console.log("deleted item : "+doc);
+                    res.redirect('/admin/guestlist');
                 })
                 .catch(function(err){
                     res.status(500).send({message:err.message || "Error Occured"});
@@ -308,6 +313,7 @@ exports.adminDelete=async(req,res) => {
                 Host.findByIdAndDelete({_id:id})
                 .then(function(doc){
                     console.log("deleted item : "+doc);
+                    res.redirect('/admin/hostlist');
                 })
                 .catch(function(err){
                     res.status(500).send({message:err.message || "Error Occured"});

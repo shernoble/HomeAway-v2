@@ -55,14 +55,12 @@ p{
     }
     
     button[type=submit] {
-        padding: 10px 15px;
-        background-color: #ddd;
+        /* padding: 10px 15px; */
+        /* background-color: #ddd; */
         border: none;
-        border-radius: 0 5px 5px 0;
+        /* border-radius: 0 5px 5px 0; */
         cursor: pointer;
         font-size: 16px;
     }
     
-    button[type=submit]:hover {
-        background-color: #ccc;
-    }
+    
