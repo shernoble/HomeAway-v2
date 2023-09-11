@@ -139,7 +139,21 @@ exports.adminLogout=async(req,res) => {
 exports.adminProfile=async(req,res) => {
     try{
         session=req.session;
-        if(!session.userid) res.render("admin-register");
+        console.log('we here');
+        if(session.userid) {
+            Admin.findOne({'Email':session.userid})
+                .then(function(result){
+                    res.render('admin-profile',{profile:result});
+                })
+                .catch(function(err){
+                    res.render("error");
+                    console.log("error:"+err);
+                })
+        }
+        else{
+            // res.render("admin-login");
+            res.redirect("/admin/login");
+        }
     }
     catch(err){
         res.render("error");
@@ -209,14 +223,61 @@ exports.adminReports=async(req,res) => {
     }
 }
 
-// exports.adminVerification=async(req,res) => {
-//     try{
-//         res.render('admin-verification');
-//     }
-//     catch(err){
-//         res.status(500).send({message:err.message || "Error Occured"});
-//     }
-// }
+exports.adminSearchGuest=async(req,res) => {
+    var x=req.body.search_ch;
+    // console.log(x);
+    // sgn.index({'UserID':"text",'UserName':"text",'Email':"text"});
+    // console.log(x);
+    Guest.find({$text:{$search:x}})
+    // console.log(l1);
+        .then(function(results){
+            if(results.length!=0){
+                // console.log(results);
+                res.render("admin-guestlist",{guestList:results});
+            }
+            else console.log("no results");
+        })
+        .catch(function(err){
+            console.log(err);
+        });
+}
+
+exports.adminSearchHost=async(req,res) => {
+    var x=req.body.search_ch;
+    // console.log(x);
+    // sgn.index({'UserID':"text",'UserName':"text",'Email':"text"});
+    // console.log(x);
+    Host.find({$text:{$search:x}})
+    // console.log(l1);
+        .then(function(results){
+            if(results.length!=0){
+                // console.log(results);
+                res.render("admin-hostlist",{hostList:results});
+            }
+            else console.log("no results");
+        })
+        .catch(function(err){
+            console.log(err);
+        });
+}
+
+exports.adminSearchListing=async(req,res) => {
+    var x=req.body.search_ch;
+    // listingSchema.index({'Host.HostID':"text",'Address.State':"text",'Address.District':"text",'ListingID':"text",'Address.Pincode':"text",'Title':"text"});
+    console.log(x);
+    Listing.find({$text:{$search:x}})
+    // console.log(l1);
+        .then(function(results){
+            console.log("results:"+results);
+            if(results.length!=0){
+                res.render("admin-homepage",{All_listings:results});
+            }
+            else console.log("no results");
+        })
+        .catch(function(err){
+            console.log(err);
+        });
+}
 
 exports.adminDelete=async(req,res) => {
     try{

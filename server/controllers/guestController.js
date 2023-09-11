@@ -73,6 +73,44 @@ exports.guestHomePageFull=async(req,res) => {
 
 }
 
+exports.guestProfile=async(req,res) => {
+    try{
+        // get bookings also
+
+        session=req.session;
+        if(session.userid){
+            // find user and send details
+            Guest.findOne({'Email':session.userid})
+                .then(function(results){
+                    console.log(results);
+                    Booking.find({'GuestID':session.userid})
+                        .then(function(docs){
+                        
+                            res.render("guest-profile",{profile:results,bookings:docs});
+
+                        })
+                        .catch(function(err){
+                            res.render("error");
+                            console.log(err);
+                        })
+                })
+                .catch(function(error){
+                    res.render("error");
+                    console.log(error);
+                })
+            
+        }
+        else{
+            res.render("guest-login");
+        }
+    }
+    catch(error){
+        res.render("error");
+        console.log(error);
+    }
+}
+
+
 exports.guestHomePage=async(req,res) => {
     try{
         let val=false;
@@ -281,7 +319,7 @@ exports.guestSearch=async(req,res) => {
         // res.render("guest-login");
         Listing.find({$text:{$search:item}})
             .then(function(results){
-                res.render("guest-homepage",{All_listings:results,weather_bool:false,userLoggedIn:val});
+                res.render("guest-homepage",{All_listings:results,weather_bool:false,weather_location:"all",guests:0,userLoggedIn:val});
             })
             .catch(function(error){
                 // res.status(500).send({message:error.message || "Error Occured"});
@@ -326,19 +364,20 @@ exports.guestReserve=async(req,res) => {
 
 exports.guestReservePost=async(req,res) => {
     try{
-        console.log("hehriehr");
+        console.log("reserve post function");
         // check sessions
         session=req.session;
         const id=req.params.id;
+        
         console.log("session user:"+session.userid);
         if(session.userid){
-            console.log("hello");
+            console.log("hello user");
             
             console.log("reservation"+id);
             const ci=new Date(req.body.checkin);
             const co=new Date(req.body.checkout);
-            console.log('sd:'+req.body.checkin);
-            console.log('ed:'+co);
+            // console.log('sd:'+req.body.checkin);
+            // console.log('ed:'+co);
 
                 const diffms=Math.abs(co-ci);
                 const diffInDays = Math.ceil(diffms / (1000 * 60 * 60 * 24));
@@ -403,7 +442,8 @@ exports.guestConfirmBookingPost=async(req,res) => {
         FromDate:checkin,
         ToDate:checkout
     });
-        Booking.find({ListingID:listID})
+    
+    Booking.find({ListingID:listID})
         .then((documents) => {
             console.log(documents);
             if(documents.length!=0){
@@ -430,7 +470,16 @@ exports.guestConfirmBookingPost=async(req,res) => {
                         Booking.create(new_booking)
                         .then(function(){
                             console.log("inserted booking");
+                            // Guest.find({'Email':session.userid})
+                            //     .then(function(result){
+                            //         // add booking to user profile
+                            //         result.Bookings.push(new_booking);
+                            //     })
+                            //     .catch(function(err){
+                            //         res.json({ success: false });
+                            //     })
                             res.json({ success: true });
+                            
                             // res.render("congrats",{userLoggedIn:true});
 
 
@@ -455,7 +504,16 @@ exports.guestConfirmBookingPost=async(req,res) => {
                     .then(function(){
                         console.log("inserted booking");
                         // res.render("congrats");
-                        res.json({ success: true });
+                        // Guest.find({'Email':session.userid})
+                        //         .then(function(result){
+                        //             // add booking to user profile
+                        //             result.Bookings.push(new_booking);
+                        //             res.json({ success: true });
+                        //         })
+                        //         .catch(function(err){
+                        //             res.json({ success: false });
+                        //         })
+                        res.json({success:true});
 
                     })
                     .catch(function(err){

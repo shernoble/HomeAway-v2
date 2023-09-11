@@ -10,6 +10,7 @@ router.get('/homepagefull',guestController.guestHomePageFull);
 router.get('/reserve/:id',guestController.guestReserve);
 router.get("/logout",guestController.guestLogout);
 router.get("/report",guestController.guestReport);
+router.get('/profile',guestController.guestProfile);
 
 // router.get('/confirmBooking/:id',guestController.guestConfirmBooking);
 

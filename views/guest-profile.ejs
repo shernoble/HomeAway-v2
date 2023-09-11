@@ -4,23 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>User Profile</title>
-    <link rel="stylesheet" href="/css/profile.css">
     <!-- Add Bootstrap CSS -->
+    <link rel="stylesheet" href="/css/profile.css">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <%- include("./partials/admin-header") -%>
-    <!-- <style>
-        /* Custom CSS for the profile page */
-        .profile-card {
-            max-width: 600px; /* Adjust the maximum width as needed */
-            margin: 0 auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-        }
-    </style> -->
-</head>
-<body>
+    <%- include("./partials/header") -%>
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-12">
@@ -38,6 +25,24 @@
                         <label for="phone">Phone Number:</label>
                         <input type="text" id="phone" class="form-control" value=<%=profile.PhoneNumber%> readonly>
                     </div>
+                    <h3>Bookings:</h3>
+                    <ul id="bookings" class="list-group">
+                        <!-- Bookings will be dynamically added here using JavaScript -->
+                        <%bookings.forEach(function(element){%>
+                            <% let date1=element.FromDate; %>
+                            <% let date2=element.ToDate; %>
+                            <% let y1=date1.getFullYear(); %>
+                            <% let m1=String(date1.getMonth() + 1).padStart(2, '0'); %>
+                            <% let d1=String(date1.getDate()).padStart(2, '0'); %>
+                            <% let new1=`${y1}-${m1}-${d1}` %>
+                            <% let y2=date2.getFullYear(); %>
+                            <% let m2=String(date2.getMonth() + 1).padStart(2, '0'); %>
+                            <% let d2=String(date2.getDate()).padStart(2, '0'); %>
+                            <% let new2=`${y2}-${m2}-${d2}` %>
+                            <li class="list-group-item">from:<%=new1%>  to:<%=new2%></li>
+                        <% }) %>
+                    </ul>
+                    
                 </div>
             </div>
         </div>

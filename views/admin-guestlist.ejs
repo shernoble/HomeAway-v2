@@ -1,6 +1,6 @@
 <%- include("./partials/admin-header") -%>
     <div class="search-container">
-        <form action="/admin-guestlist/search" method="post">
+        <form action="/admin/guests/search" method="post">
             <input type="text" class="searchTerm" name="search_ch" id="search_ch" placeholder="search">
             <button type="submit"><i class="fa fa-search"></i></button>
         </form>
@@ -39,8 +39,8 @@
                                     Are you sure you want to delete user <b><%=element.UserID%></b> ?
                                     </div>
                                     <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="submit" class="btn btn-primary">Confirm</button>
+                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">Close</button>
+                                    <button type="submit" class="btn btn-success">Confirm</button>
                                     </div>
                                 </div>
                             </div>

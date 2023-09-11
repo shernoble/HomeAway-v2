@@ -16,20 +16,18 @@
 <body class="d-flex flex-column min-vh-100" >
 <div class="navbar header">
     <h2 class="heading1">HomeAway-admin</h2>
-        <div class="dropdown">
+        <!-- <div class="dropdown">
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 click
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                 <a class="dropdown-item" href="/admin/logout">logout</a>
                 <a class="dropdown-item" href="/admin/profile">Profile</a>
-                <!-- <a class="dropdown-item" href="#">Something else here</a> -->
             </div>
-        </div>
+        </div> -->
     
 </div>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <!-- <a class="navbar-brand" href="#">My Website</a> -->
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -48,14 +46,12 @@
             <a class="nav-link"  href="/admin/reports">Reports</a>
         </li>
         <li class="nav-item dropdown">
-            <a class="nav-link dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" href="#">Verification</a>
+            <a class="nav-link dropdown-toggle" role="button" id="dropdownMenuLink" data-bs-toggle="dropdown" href="#">Admin Profile</a>
             <div class="dropdown-menu " aria-labelledby="dropdownMenuLink">
             <!-- render guest profile page -->
 
-                <a class="dropdown-item" href="/verification/guests">Guests</a>
-                <a class="dropdown-item" href="/verification/hosts">Hosts</i></a>
-                <!-- redirect to login page -->
-                <a class="dropdown-item" href="/verification/listings">Listings</i></a>
+            <a class="dropdown-item" href="/admin/logout">logout</a>
+            <a class="dropdown-item" href="/admin/profile">View Profile</a>
 
         </div>
         </li>
