@@ -217,7 +217,6 @@ exports.adminReports=async(req,res) => {
         }
     }
     catch(err){
-        // res.status(500).send({message:err.message || "Error Occured"});
         res.render("error");
         console.log("error : "+err);
     }
@@ -225,9 +224,7 @@ exports.adminReports=async(req,res) => {
 
 exports.adminSearchGuest=async(req,res) => {
     var x=req.body.search_ch;
-    // console.log(x);
-    // sgn.index({'UserID':"text",'UserName':"text",'Email':"text"});
-    // console.log(x);
+
     Guest.find({$text:{$search:x}})
     // console.log(l1);
         .then(function(results){
@@ -235,7 +232,10 @@ exports.adminSearchGuest=async(req,res) => {
                 // console.log(results);
                 res.render("admin-guestlist",{guestList:results});
             }
-            else console.log("no results");
+            else {
+                alert("no results");
+                res.redirect("/admin/guestList");
+            }
         })
         .catch(function(err){
             console.log(err);
@@ -244,9 +244,7 @@ exports.adminSearchGuest=async(req,res) => {
 
 exports.adminSearchHost=async(req,res) => {
     var x=req.body.search_ch;
-    // console.log(x);
-    // sgn.index({'UserID':"text",'UserName':"text",'Email':"text"});
-    // console.log(x);
+
     Host.find({$text:{$search:x}})
     // console.log(l1);
         .then(function(results){
@@ -254,7 +252,10 @@ exports.adminSearchHost=async(req,res) => {
                 // console.log(results);
                 res.render("admin-hostlist",{hostList:results});
             }
-            else console.log("no results");
+            else {
+                alert("no results");
+                res.redirect("/admin/hostList");
+            }
         })
         .catch(function(err){
             console.log(err);
@@ -272,10 +273,14 @@ exports.adminSearchListing=async(req,res) => {
             if(results.length!=0){
                 res.render("admin-homepage",{All_listings:results});
             }
-            else console.log("no results");
+            else {
+                alert("no results");
+                res.redirect("/admin/homepage");
+            }
         })
         .catch(function(err){
             console.log(err);
+            res.render("error");
         });
 }
 

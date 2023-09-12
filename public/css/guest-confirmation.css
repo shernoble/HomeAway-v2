@@ -147,6 +147,17 @@
     text-align: right; /* Align the content inside the container to the right */
     padding-right: 20px;
 }
+.buttons-container {
+    text-align: center;
+}
+.confbtn{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+.canclebtn{
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
 .ccl{
     margin: 0px 40px 0px 80px;
 

@@ -89,18 +89,19 @@
                 </tbody>
             </table>
         </div>
-        <form id="confirm-form">
-            <input type="hidden" id="listId" value=<%=Listing.ListingID%>>
-            <input type="hidden" id="hostId" value=<%=Listing.host.hostID%>>
-            <input type="hidden" id="ci" value=<%=startDate%>>
-            <input type="hidden" id="co" value=<%=endDate%>>
-            <button type="button" id="confirmBtn" class="btn btn-outline-success">confirm booking</button>
-        </form>
-        <form action="/guest/homepage" method="post">
-            <!-- take back to guest search page -->
-            <button class="btn btn-outline-dark" onclick="history.back()" name="go_back">Cancel</button>
-        </form>
-        
+        <div class="buttons-container">
+            <form id="confirm-form">
+                <input type="hidden" id="listId" value=<%=Listing._id%>>
+                <input type="hidden" id="hostId" value=<%=Listing.host.hostID%>>
+                <input type="hidden" id="ci" value=<%=startDate%>>
+                <input type="hidden" id="co" value=<%=endDate%>>
+                <button type="button" id="confirmBtn" class="confbtn btn btn-outline-success">confirm booking</button>
+            </form>
+            <!-- <form action="/guest/homepage" method="post"> -->
+                <!-- take back to guest search page -->
+                <button class="cancelbtn btn btn-outline-dark" onclick="history.back()" name="go_back">Cancel</button>
+            <!-- </form> -->
+        </div>
         <script src="/js/guest-validations.js"></script>
     <%-include("./partials/footer")-%>
 </html>

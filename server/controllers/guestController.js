@@ -86,7 +86,7 @@ exports.guestProfile=async(req,res) => {
                     Booking.find({'GuestID':session.userid})
                         .then(function(docs){
                         
-                            res.render("guest-profile",{profile:results,bookings:docs});
+                            res.render("guest-profile",{profile:results,bookings:docs,userLoggedIn:true});
 
                         })
                         .catch(function(err){
