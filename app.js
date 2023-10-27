@@ -71,7 +71,9 @@ const hostRoutes=require("./server/routes/hostRoutes");
 app.use("/host",hostRoutes);
 
 
-
+// app.use("/:page",function(req,res){
+//     res.render(req.params.page);
+// })
 
 app.listen(3000, () => {
     console.log("server started at port 3000");

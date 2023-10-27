@@ -76,7 +76,7 @@
         
         <section class="houses" id="main">
             <%All_listings.forEach(function(element){%>
-                <a href="/guest/reserve/<%=element.ListingID%>">
+                <a href="/guest/reserve/<%=element._id%>">
                     <div class="house">
                         <div style="background-image: url(<%=element.img_url1%>);" class="house-img"></div>
                         <p class="title"><%=element.Title.substring(0,30)+"..."%></p>

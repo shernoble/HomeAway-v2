@@ -115,7 +115,7 @@ document.addEventListener("DOMContentLoaded",function(){
             } else {
                 bookingMessage.classList.remove('alert-success');
                 bookingMessage.classList.add('alert-danger');
-                bookingMessage.innerHTML = 'place not available for these dates';
+                bookingMessage.innerHTML = 'Booking dates not available for this place.';
             }
         };
 

@@ -293,7 +293,7 @@ exports.guestLogout=async(req,res) => {
         console.log("session:"+req.session);
         req.session.destroy();
         console.log("session:"+req.session);
-        res.redirect('/guest/homepagefull');
+        res.redirect('/');
 }
 
 exports.guestFilter=async(req,res) => {
@@ -343,7 +343,7 @@ exports.guestReserve=async(req,res) => {
         session=req.session;
         let val=false;
         if(session.userid) val=true;
-        Listing.findOne({ListingID:id})
+        Listing.findOne({_id:id})
         .then(function(results){
             // console.log("len:"+results);
             res.render("guest-reservation",{Listing:results,userLoggedIn:val});
@@ -381,7 +381,7 @@ exports.guestReservePost=async(req,res) => {
 
                 const diffms=Math.abs(co-ci);
                 const diffInDays = Math.ceil(diffms / (1000 * 60 * 60 * 24));
-                Listing.find({ListingID:id})
+                Listing.find({_id:id})
                     .then(function(results){
                         // alert("working");
                         // console.log(results[0]);

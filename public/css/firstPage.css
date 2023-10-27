@@ -1,3 +1,9 @@
+body {
+    /* background-color: #909c9b; */
+    background-image: url(https://a0.muscache.com/im/pictures/458e3fa3-3b67-4dc5-87b3-65178557429b.jpg?im_w=1200);
+    background-repeat: no-repeat;
+    background-size: 1500px auto;
+}
 .row {
     display: flex;
     justify-content: space-around;
@@ -8,6 +14,8 @@
     top: 50%;
     transform: translate(-50%, -50%);
 }
+
+
 
 #myVideo {
     position: absolute;
@@ -39,33 +47,33 @@
 #admin{
     width: 125px;
     margin: 20px;
-    background-color: lightpink;
+    background-color: #557571;
     border: 0px;
 }
 
 #admin:hover{
-    background-color: rgb(169, 119, 127);
+    background-color: #92BA92;
 }
 
 #guest{
     width: 125px;
-    background-color: lightpink;
+    background-color: #557571;
     border: 0px;
     border-color: #ffffff;
 }
 
 #guest:hover{
-    background-color: rgb(169, 119, 127);
+    background-color: #92BA92;
 }
 
 #host{
     width: 125px;
     margin: 20px;
     margin-bottom: 30px;
-    background-color: lightpink;
+    background-color: #557571;
     border: 0px;
 }
 
 #host:hover{
-    background-color: rgb(169, 119, 127);;
+    background-color: #92BA92;
 }
